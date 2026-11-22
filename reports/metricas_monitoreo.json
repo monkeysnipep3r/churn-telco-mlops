@@ -1,0 +1,18 @@
+{
+  "referencia": {
+    "accuracy": 0.7981,
+    "precision": 0.6442,
+    "recall": 0.5367,
+    "f1": 0.5855,
+    "roc_auc": 0.8413,
+    "tasa_churn": 0.2658
+  },
+  "lote_nuevo": {
+    "accuracy": 0.724,
+    "precision": 0.6419,
+    "recall": 0.6102,
+    "f1": 0.6257,
+    "roc_auc": 0.7976,
+    "tasa_churn": 0.378
+  }
+}

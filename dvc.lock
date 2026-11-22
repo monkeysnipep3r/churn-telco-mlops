@@ -1,0 +1,74 @@
+schema: '2.0'
+stages:
+  preparar:
+    cmd: python src/preparar.py
+    deps:
+    - path: data/WA_Fn-UseC_-Telco-Customer-Churn.csv
+      hash: md5
+      md5: 0f9de68e012bd3aed5fa7cdc9fc421af
+      size: 977501
+    - path: src/datos.py
+      hash: md5
+      md5: ce941972f0bef9021c0dd9f340bef2d6
+      size: 981
+    - path: src/preparar.py
+      hash: md5
+      md5: 4f30bdb32981ff1bf8460d4921df3e7f
+      size: 903
+    outs:
+    - path: data/procesado/telco_limpio.csv
+      hash: md5
+      md5: c999430204caa3a2a76fecc15a0eb107
+      size: 899834
+  entrenar:
+    cmd: python src/entrenar.py data/procesado/telco_limpio.csv
+    deps:
+    - path: data/procesado/telco_limpio.csv
+      hash: md5
+      md5: c999430204caa3a2a76fecc15a0eb107
+      size: 899834
+    - path: src/entrenar.py
+      hash: md5
+      md5: 1b7e5c3ce2e483cc99f623e1724f9cc0
+      size: 2729
+    - path: src/prediccion.py
+      hash: md5
+      md5: ed672ddba8eee32e5efada58ca76b860
+      size: 1250
+    outs:
+    - path: models/metricas.json
+      hash: md5
+      md5: 24e1a09183cc31438901e60551e33c89
+      size: 110
+    - path: models/modelo.joblib
+      hash: md5
+      md5: 215536295bc79741ab3fa62b9de02ca6
+      size: 4337
+  monitorear:
+    cmd: python src/monitoreo.py
+    deps:
+    - path: data/nuevos/lote_nuevo.csv
+      hash: md5
+      md5: b08da52d45388e00958b53ce934a7c79
+      size: 199497
+    - path: models/modelo.joblib
+      hash: md5
+      md5: 215536295bc79741ab3fa62b9de02ca6
+      size: 4337
+    - path: src/monitoreo.py
+      hash: md5
+      md5: 10d9c2d871ba32e3b8ca28e5bbf4f617
+      size: 7146
+    outs:
+    - path: reports/drift_reporte.html
+      hash: md5
+      md5: 9dd63836e18dcfcb57349873a809046a
+      size: 108486
+    - path: reports/drift_resultados.csv
+      hash: md5
+      md5: 9d2e0ec07679a47b7c16d6f31a32b11b
+      size: 495
+    - path: reports/metricas_monitoreo.json
+      hash: md5
+      md5: 4043fdedbc65ce7b4412077c038d2d89
+      size: 337

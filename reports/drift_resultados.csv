@@ -1,0 +1,9 @@
+variable,tipo,prueba,p_valor,psi,hay_drift
+tenure,numerica,Kolmogorov-Smirnov,0.0,0.0949,True
+MonthlyCharges,numerica,Kolmogorov-Smirnov,0.0,0.0401,True
+TotalCharges,numerica,Kolmogorov-Smirnov,0.0,0.0363,True
+SeniorCitizen,categorica,Chi-cuadrada,4.1e-05,0.0131,True
+Contract,categorica,Chi-cuadrada,0.0,0.1906,True
+InternetService,categorica,Chi-cuadrada,0.0,0.0877,True
+PaymentMethod,categorica,Chi-cuadrada,0.0,0.1153,True
+PaperlessBilling,categorica,Chi-cuadrada,1e-06,0.0202,True
