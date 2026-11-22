@@ -2,3 +2,11 @@ venv/
 .venv/
 __pycache__/
 .pytest_cache/
+
+# MLflow
+mlflow.db
+mlruns/
+mlartifacts/
+
+# Modelo que entrena Airflow
+models_airflow/

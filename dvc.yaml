@@ -1,0 +1,36 @@
+stages:
+  preparar:
+    cmd: python src/preparar.py
+    deps:
+      - data/WA_Fn-UseC_-Telco-Customer-Churn.csv
+      - src/preparar.py
+      - src/datos.py
+    outs:
+      - data/procesado/telco_limpio.csv
+
+  entrenar:
+    cmd: python src/entrenar.py data/procesado/telco_limpio.csv
+    deps:
+      - data/procesado/telco_limpio.csv
+      - src/entrenar.py
+      - src/prediccion.py
+    outs:
+      - models/modelo.joblib
+    metrics:
+      - models/metricas.json:
+          cache: false
+
+  monitorear:
+    cmd: python src/monitoreo.py
+    deps:
+      - data/nuevos/lote_nuevo.csv
+      - models/modelo.joblib
+      - src/monitoreo.py
+    outs:
+      - reports/drift_reporte.html:
+          cache: false
+      - reports/drift_resultados.csv:
+          cache: false
+    metrics:
+      - reports/metricas_monitoreo.json:
+          cache: false

@@ -2,13 +2,18 @@
 
 La API (app/main.py) y las pruebas (tests/) usan este archivo.
 """
+import os
 from pathlib import Path
 
 import joblib
 import pandas as pd
 
 RAIZ = Path(__file__).resolve().parent.parent
-RUTA_MODELO = RAIZ / "models" / "modelo.joblib"
+
+# Carpeta donde se guarda el modelo. Airflow usa otra carpeta (models_airflow)
+# para no pisar el modelo que usa la API.
+CARPETA_MODELOS = RAIZ / os.environ.get("MODELOS_DIR", "models")
+RUTA_MODELO = CARPETA_MODELOS / "modelo.joblib"
 
 COLUMNAS_NUM = ["tenure", "MonthlyCharges", "TotalCharges", "SeniorCitizen"]
 COLUMNAS_CAT = ["Contract", "InternetService", "PaymentMethod", "PaperlessBilling"]

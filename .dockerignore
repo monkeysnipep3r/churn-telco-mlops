@@ -1,6 +1,14 @@
 venv/
 .venv/
 .git/
+.dvc/cache/
 __pycache__/
 .pytest_cache/
 solucion_profesor/
+dags/
+mlruns/
+mlartifacts/
+mlflow.db
+models_airflow/
+data/nuevos/
+reports/
