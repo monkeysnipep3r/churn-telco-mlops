@@ -39,6 +39,25 @@ MODELOS = {
 }
 
 
+def guardar_modelo(modelo, ejemplo):
+    """Guarda el modelo en MLflow y regresa su URI.
+
+    Las versiones nuevas de MLflow guardan los modelos de sklearn con skops, que pide
+    marcar como confiables algunos tipos (por ejemplo los arboles). Primero se intenta
+    con cloudpickle; si esa version de MLflow no lo acepta, se usa skops indicando los
+    tipos del modelo, que es seguro porque el modelo lo entrenamos nosotros.
+    """
+    try:
+        info = mlflow.sklearn.log_model(modelo, name="modelo", input_example=ejemplo,
+                                        serialization_format="cloudpickle")
+    except Exception:
+        import skops.io as sio
+        tipos = sio.get_untrusted_types(data=sio.dumps(modelo))
+        info = mlflow.sklearn.log_model(modelo, name="modelo", input_example=ejemplo,
+                                        skops_trusted_types=tipos)
+    return info.model_uri
+
+
 def construir(clase, parametros):
     prep = ColumnTransformer([
         ("num", StandardScaler(), COLUMNAS_NUM),
@@ -73,17 +92,17 @@ def main():
             mlflow.log_param("datos", Path(ruta).name)
             mlflow.log_param("filas_entrenamiento", len(X_train))
             mlflow.log_metrics(metricas)
-            mlflow.sklearn.log_model(modelo, "modelo", input_example=X_train.head(3))
+            uri = guardar_modelo(modelo, X_train.head(3))
 
-            resultados.append((nombre, run.info.run_id, metricas))
+            resultados.append((nombre, uri, metricas))
             print(f"{nombre:25s} accuracy={metricas['accuracy']}  f1={metricas['f1']}  "
                   f"recall={metricas['recall']}  roc_auc={metricas['roc_auc']}")
 
     # El mejor modelo se elige por F1, porque importa encontrar a los clientes que se van
-    mejor_nombre, mejor_run, mejores = max(resultados, key=lambda r: r[2]["f1"])
+    mejor_nombre, mejor_uri, mejores = max(resultados, key=lambda r: r[2]["f1"])
     print(f"\nMejor modelo por F1: {mejor_nombre} (f1={mejores['f1']})")
 
-    version = mlflow.register_model(f"runs:/{mejor_run}/modelo", NOMBRE_MODELO_REGISTRADO)
+    version = mlflow.register_model(mejor_uri, NOMBRE_MODELO_REGISTRADO)
     cliente = MlflowClient()
     cliente.set_registered_model_alias(NOMBRE_MODELO_REGISTRADO, "champion", version.version)
     print(f"Registrado como '{NOMBRE_MODELO_REGISTRADO}' version {version.version} "
